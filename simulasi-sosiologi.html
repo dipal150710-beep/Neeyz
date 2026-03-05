@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulasi Ujian Sosiologi · Kelas X</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #faf7f2;
+  --bg2:    #f3ede3;
+  --panel:  #ffffff;
+  --ink:    #2c1f0f;
+  --ink2:   #6b4f32;
+  --ink3:   #9e7c58;
+  --rust:   #b5451b;
+  --rust2:  #d45e30;
+  --rust3:  #fceee8;
+  --sage:   #3d6b4f;
+  --amber:  #c27d20;
+  --border: #e0d3c0;
+  --shadow: 0 4px 24px rgba(44,31,15,0.09);
+  --shadow2: 0 16px 56px rgba(44,31,15,0.14);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+}
+
+/* subtle paper texture lines */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 31px,
+    rgba(181,69,27,0.04) 31px, rgba(181,69,27,0.04) 32px
+  );
+  pointer-events:none; z-index:0;
+}
+
+.page { display:none; position:relative; z-index:1; }
+.page.active { display:block; }
+
+/* ============ COVER ============ */
+#cover {
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:center;
+  padding:24px;
+}
+.cover-wrap {
+  background:var(--panel);
+  border-radius:20px;
+  padding:52px 44px;
+  max-width:500px; width:100%;
+  box-shadow:var(--shadow2);
+  border:1px solid var(--border);
+  position:relative; overflow:hidden;
+}
+/* decorative top stripe */
+.cover-wrap::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:5px;
+  background:linear-gradient(90deg, var(--rust), var(--amber), var(--sage));
+}
+/* faint book emoji watermark */
+.cover-wrap::after {
+  content:'📖';
+  position:absolute; bottom:-16px; right:-10px;
+  font-size:160px; opacity:0.05; line-height:1;
+  transform:rotate(-10deg);
+  pointer-events:none;
+}
+
+.cv-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--rust3); border:1px solid rgba(181,69,27,.25);
+  color:var(--rust); font-size:11px; font-weight:700;
+  letter-spacing:1.5px; text-transform:uppercase;
+  padding:5px 14px; border-radius:5px; margin-bottom:22px;
+}
+.cover-wrap h1 {
+  font-family:'Lora',serif;
+  font-size:30px; font-weight:700; line-height:1.25;
+  margin-bottom:6px; color:var(--ink);
+}
+.cover-wrap h1 em { color:var(--rust); font-style:italic; }
+.cover-wrap h2 {
+  font-size:13.5px; color:var(--ink2); font-weight:400;
+  margin-bottom:28px; line-height:1.6;
+}
+
+.topic-pills {
+  display:flex; flex-wrap:wrap; gap:6px; margin-bottom:28px;
+}
+.pill {
+  font-size:11px; font-weight:600; padding:4px 12px; border-radius:20px;
+  border:1px solid; letter-spacing:.3px;
+}
+.pill-1 { background:#fdf2ee; border-color:#f0b89a; color:#a03010; }
+.pill-2 { background:#f0f8f2; border-color:#90c9a8; color:#1e5c38; }
+.pill-3 { background:#f8f4ee; border-color:#d9c4a0; color:#7a5a1e; }
+.pill-4 { background:#fdf0f0; border-color:#e8a0a0; color:#8c2020; }
+
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:28px; }
+.sc {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:11px; padding:12px 6px; text-align:center;
+}
+.sc .v { font-size:22px; font-weight:700; color:var(--rust); font-family:'Lora',serif; }
+.sc .l { font-size:10px; color:var(--ink3); margin-top:3px; text-transform:uppercase; letter-spacing:.5px; }
+
+.fg { margin-bottom:14px; }
+.fg label {
+  display:block; font-size:11px; font-weight:700;
+  color:var(--ink2); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px;
+}
+.fg input, .fg select {
+  width:100%; padding:12px 14px;
+  background:var(--bg); border:1.5px solid var(--border); border-radius:10px;
+  font-size:14px; font-family:'DM Sans',sans-serif; color:var(--ink);
+  outline:none; transition:border-color .2s, box-shadow .2s;
+}
+.fg input:focus, .fg select:focus {
+  border-color:var(--rust); box-shadow:0 0 0 3px rgba(181,69,27,.1);
+}
+.fg select option { background:white; }
+
+.btn-start {
+  width:100%; padding:15px; margin-top:4px;
+  background:linear-gradient(135deg,var(--rust),var(--rust2));
+  color:white; font-size:15px; font-weight:700; font-family:'DM Sans',sans-serif;
+  border:none; border-radius:12px; cursor:pointer;
+  transition:transform .2s, box-shadow .2s; letter-spacing:.3px;
+}
+.btn-start:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(181,69,27,.3); }
+
+/* ============ UJIAN ============ */
+#ujian { min-height:100vh; padding:16px; }
+
+.top-bar {
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:14px; padding:12px 20px;
+  display:flex; justify-content:space-between; align-items:center;
+  margin-bottom:16px; flex-wrap:wrap; gap:10px;
+  box-shadow:var(--shadow);
+}
+.tb-info h3 { font-size:14px; font-weight:700; font-family:'Lora',serif; }
+.tb-info p { font-size:11px; color:var(--ink2); }
+.timer-wrap {
+  display:flex; align-items:center; gap:8px;
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:9px; padding:7px 16px;
+}
+.tl { font-size:10px; color:var(--ink3); text-transform:uppercase; letter-spacing:1px; }
+.tv { font-size:22px; font-weight:700; color:var(--rust); font-family:'Lora',serif; }
+.tv.warn { color:var(--amber); }
+.tv.danger { color:#dc2626; animation:blink 1s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.4} }
+
+.ujian-grid { display:grid; grid-template-columns:1fr 248px; gap:16px; align-items:start; }
+@media(max-width:780px){ .ujian-grid{grid-template-columns:1fr} .side{order:-1} }
+
+/* SOAL CARD */
+.qcard {
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:18px; overflow:hidden; box-shadow:var(--shadow);
+}
+.qprog { height:4px; background:var(--bg2); }
+.qprog-bar { height:100%; background:linear-gradient(90deg,var(--rust),var(--amber)); transition:width .4s; }
+
+.qhead {
+  padding:16px 22px 11px; border-bottom:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center; gap:10px;
+}
+.qbadge {
+  background:var(--rust); color:white;
+  padding:4px 16px; border-radius:5px;
+  font-size:12px; font-weight:700; letter-spacing:.5px; font-family:'Lora',serif;
+}
+.qtopic {
+  font-size:11px; font-weight:700; color:var(--ink3);
+  text-transform:uppercase; letter-spacing:1px;
+  background:var(--bg2); border:1px solid var(--border);
+  padding:3px 10px; border-radius:4px;
+}
+
+.qtxt {
+  padding:20px 22px; font-size:14.5px; line-height:1.85; color:var(--ink);
+  font-family:'DM Sans',sans-serif; border-bottom:1px solid var(--bg2);
+}
+
+/* OPTIONS */
+.opts { padding:16px 22px 20px; display:flex; flex-direction:column; gap:8px; }
+.opt {
+  display:flex; align-items:flex-start; gap:11px;
+  padding:11px 15px; border:1.5px solid var(--border);
+  border-radius:11px; cursor:pointer; transition:all .18s;
+  background:var(--panel); width:100%; text-align:left;
+  font-family:'DM Sans',sans-serif;
+}
+.opt:hover:not(.sel):not(.dis) {
+  border-color:var(--rust); background:var(--rust3); transform:translateX(3px);
+}
+.opt.sel { border-color:var(--rust); background:#fff5f1; }
+.opt.ok  { border-color:var(--sage); background:#f0fdf4; }
+.opt.wrong { border-color:#dc2626; background:#fef2f2; }
+.opt.dis { cursor:default; }
+
+.opt-ltr {
+  width:28px; height:28px; min-width:28px; border-radius:6px;
+  background:var(--bg2); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700; color:var(--ink2);
+  transition:all .18s; flex-shrink:0;
+  font-family:'Lora',serif;
+}
+.opt.sel .opt-ltr { background:var(--rust); color:white; border-color:var(--rust); }
+.opt.ok  .opt-ltr { background:var(--sage); color:white; border-color:var(--sage); }
+.opt.wrong .opt-ltr { background:#dc2626; color:white; border-color:#dc2626; }
+.opt-txt { font-size:14px; line-height:1.55; color:var(--ink); padding-top:3px; }
+
+/* ESSAY */
+.essay-wrap { padding:16px 22px 22px; }
+.essay-wrap textarea {
+  width:100%; min-height:160px; resize:vertical;
+  padding:14px 16px; background:var(--bg);
+  border:1.5px solid var(--border); border-radius:10px;
+  font-family:'DM Sans',sans-serif; font-size:13.5px;
+  line-height:1.7; color:var(--ink); outline:none;
+  transition:border-color .2s;
+}
+.essay-wrap textarea:focus { border-color:var(--rust); }
+
+.kunci-box {
+  display:none; margin-top:14px;
+  background:#f5fdf7; border:1.5px solid #a7d9b8;
+  border-radius:11px; padding:16px 18px;
+}
+.kunci-box.show { display:block; }
+.kunci-lbl {
+  font-size:11px; font-weight:700; color:var(--sage);
+  text-transform:uppercase; letter-spacing:1px;
+  margin-bottom:10px; font-family:'Lora',serif;
+}
+.kunci-txt {
+  font-size:13px; line-height:1.9; color:var(--ink);
+  white-space:pre-line; font-family:'DM Sans',sans-serif;
+}
+.kunci-txt b { color:var(--rust); font-weight:700; }
+.kunci-txt em { color:var(--sage); font-style:normal; font-weight:700;
+  background:#e8f5ee; padding:1px 6px; border-radius:3px; }
+
+.qnav {
+  padding:13px 22px; border-top:1px solid var(--border);
+  display:flex; justify-content:space-between; gap:10px;
+}
+.nav-b {
+  padding:9px 22px; border-radius:9px;
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600;
+  cursor:pointer; transition:all .18s;
+}
+.nav-prev {
+  background:var(--bg2); border:1.5px solid var(--border); color:var(--ink2);
+}
+.nav-prev:hover { border-color:var(--rust); color:var(--rust); }
+.nav-next {
+  background:linear-gradient(135deg,var(--rust),var(--rust2));
+  color:white; border:none;
+}
+.nav-next:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(181,69,27,.3); }
+
+/* SIDEBAR */
+.side { display:flex; flex-direction:column; gap:12px; }
+.side-card {
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:15px; padding:16px; box-shadow:var(--shadow);
+}
+.side-title {
+  font-size:10px; font-weight:700; color:var(--ink3);
+  text-transform:uppercase; letter-spacing:1.5px;
+  margin-bottom:12px; font-family:'Lora',serif;
+}
+
+.num-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; }
+.nb {
+  aspect-ratio:1; border-radius:7px; border:1.5px solid var(--border);
+  background:var(--bg2); font-size:10px; font-weight:600;
+  cursor:pointer; transition:all .15s; color:var(--ink3);
+  display:flex; align-items:center; justify-content:center;
+}
+.nb:hover { border-color:var(--rust); color:var(--rust); background:var(--rust3); }
+.nb.cur { border-color:var(--rust); background:var(--rust); color:white; }
+.nb.done { background:rgba(181,69,27,.08); border-color:rgba(181,69,27,.3); color:var(--rust); }
+.nb.enb { font-size:9px; }
+
+.leg { display:flex; flex-direction:column; gap:6px; }
+.leg-i { display:flex; align-items:center; gap:7px; font-size:11px; color:var(--ink2); }
+.ld { width:12px; height:12px; border-radius:3px; border:1.5px solid; flex-shrink:0; }
+.ld-e { border-color:var(--border); background:transparent; }
+.ld-d { background:rgba(181,69,27,.08); border-color:rgba(181,69,27,.3); }
+.ld-c { background:var(--rust); border-color:var(--rust); }
+
+/* topic legend */
+.topic-legend { display:flex; flex-direction:column; gap:7px; }
+.tleg-item { display:flex; align-items:center; gap:7px; font-size:11px; color:var(--ink2); }
+.tleg-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+.submit-btn {
+  width:100%; padding:13px;
+  background:linear-gradient(135deg,#16a34a,#15803d);
+  color:white; font-family:'DM Sans',sans-serif;
+  font-size:13px; font-weight:700; border:none;
+  border-radius:12px; cursor:pointer; transition:all .2s;
+}
+.submit-btn:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(22,163,74,.3); }
+
+/* ============ HASIL ============ */
+#hasil { min-height:100vh; padding:24px 16px; display:flex; align-items:flex-start; justify-content:center; }
+.hasil-card {
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:22px; max-width:700px; width:100%;
+  overflow:hidden; box-shadow:var(--shadow2);
+}
+.hasil-hero {
+  background:linear-gradient(135deg,var(--rust) 0%,#8b2500 100%);
+  padding:42px 32px; text-align:center; color:white;
+  position:relative; overflow:hidden;
+}
+.hasil-hero::before {
+  content:'📚'; font-size:180px; position:absolute;
+  right:-30px; bottom:-30px; opacity:.06; line-height:1;
+  pointer-events:none;
+}
+.score-ring {
+  width:120px; height:120px; border-radius:50%;
+  border:3px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.12);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  margin:0 auto 18px; position:relative;
+}
+.score-ring::after {
+  content:''; position:absolute; inset:-7px; border-radius:50%;
+  border:2px dashed rgba(255,255,255,.25);
+  animation:spin 10s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg);} }
+.sn { font-size:44px; font-weight:700; font-family:'Lora',serif; line-height:1; }
+.sl { font-size:11px; opacity:.75; margin-top:3px; text-transform:uppercase; letter-spacing:1px; }
+.h-nama { font-size:20px; font-weight:700; font-family:'Lora',serif; margin-bottom:3px; }
+.h-kelas { font-size:13px; opacity:.8; }
+.pred-b {
+  display:inline-block; margin-top:14px;
+  background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.4);
+  padding:5px 20px; border-radius:20px; font-size:13px; font-weight:700;
+}
+
+.stat-row { padding:22px 28px; display:grid; grid-template-columns:repeat(3,1fr); gap:12px; border-bottom:1px solid var(--border); }
+.stat-b { text-align:center; background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:14px 8px; }
+.sv { font-size:26px; font-weight:700; font-family:'Lora',serif; }
+.sv.gr { color:var(--sage); }
+.sv.rd { color:#dc2626; }
+.sv.am { color:var(--amber); }
+.slb { font-size:11px; color:var(--ink3); margin-top:3px; }
+
+.rev-sec { padding:22px 28px; }
+.rev-title { font-size:14px; font-weight:700; margin-bottom:12px; font-family:'Lora',serif; }
+.rev-list { display:flex; flex-direction:column; gap:7px; max-height:320px; overflow-y:auto; padding-right:4px; }
+.ri { background:var(--bg2); border-radius:10px; padding:11px 13px; display:flex; gap:11px; align-items:flex-start; border-left:3px solid; }
+.ri.ok { border-color:var(--sage); }
+.ri.wrong { border-color:#dc2626; }
+.rn { font-size:11px; font-weight:700; min-width:22px; color:var(--ink3); }
+.rb { font-size:12.5px; line-height:1.5; flex:1; }
+.rb .rq { color:var(--ink); margin-bottom:3px; }
+.rb .ru { color:var(--ink3); }
+.rb .ru span { font-weight:600; color:var(--ink2); }
+.rb .rk { color:var(--sage); font-weight:700; font-size:11.5px; }
+
+.hasil-acts { padding:18px 28px 28px; display:flex; gap:12px; flex-wrap:wrap; }
+.btn-ulang {
+  flex:1; padding:13px;
+  background:linear-gradient(135deg,var(--rust),var(--rust2));
+  color:white; border:none; border-radius:12px;
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700;
+  cursor:pointer; min-width:130px; transition:all .2s;
+}
+.btn-ulang:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(181,69,27,.3); }
+.btn-essay-r {
+  flex:1; padding:13px; background:var(--bg2);
+  border:1.5px solid var(--border); color:var(--rust);
+  border-radius:12px; font-family:'DM Sans',sans-serif;
+  font-size:13px; font-weight:700; cursor:pointer;
+  min-width:130px; transition:all .2s;
+}
+.btn-essay-r:hover { border-color:var(--rust); background:var(--rust3); }
+
+/* ============ ESSAY REVIEW ============ */
+#erPage { min-height:100vh; padding:20px; }
+.er-card {
+  max-width:740px; margin:0 auto;
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:20px; overflow:hidden; box-shadow:var(--shadow);
+}
+.er-head {
+  background:linear-gradient(135deg,var(--rust),#8b2500);
+  padding:22px 28px; color:white;
+}
+.er-head h2 { font-size:18px; font-weight:700; font-family:'Lora',serif; margin-bottom:3px; }
+.er-head p { font-size:12px; opacity:.8; }
+.er-item { padding:22px 28px; border-bottom:1px solid var(--border); }
+.er-item:last-child { border-bottom:none; }
+.er-num { font-size:11px; font-weight:700; color:var(--rust); text-transform:uppercase; letter-spacing:1px; margin-bottom:7px; }
+.er-q { font-size:13.5px; font-weight:600; line-height:1.65; margin-bottom:12px; font-family:'Lora',serif; }
+.er-albl { font-size:11px; font-weight:600; color:var(--ink3); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
+.er-abox {
+  background:var(--bg); border:1px solid var(--border);
+  border-left:3px solid var(--border); border-radius:9px;
+  padding:11px 13px; font-size:13px; line-height:1.7;
+  min-height:50px; white-space:pre-wrap; margin-bottom:12px; color:var(--ink);
+}
+.er-klbl { font-size:11px; font-weight:700; color:var(--sage); text-transform:uppercase; letter-spacing:.5px; margin-bottom:5px; }
+.er-kbox {
+  background:#f5fdf7; border:1.5px solid #a7d9b8;
+  border-radius:9px; padding:13px 15px;
+  font-size:13px; line-height:1.85; white-space:pre-line; color:var(--ink);
+}
+.er-kbox b { color:var(--rust); font-weight:700; }
+.er-kbox em { color:var(--sage); font-style:normal; font-weight:700; background:#e8f5ee; padding:1px 5px; border-radius:3px; }
+.back-btn {
+  display:block; width:fit-content; margin:20px auto 28px;
+  padding:11px 30px; background:linear-gradient(135deg,var(--rust),var(--rust2));
+  color:white; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700;
+  border:none; border-radius:11px; cursor:pointer; transition:all .2s;
+}
+.back-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(181,69,27,.3); }
+
+/* MODAL */
+.modal { display:none; position:fixed; inset:0; background:rgba(44,31,15,.45); backdrop-filter:blur(4px); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+.modal.show { display:flex; }
+.modal-box {
+  background:var(--panel); border:1px solid var(--border);
+  border-radius:20px; padding:32px; max-width:360px; width:100%;
+  text-align:center; box-shadow:var(--shadow2);
+}
+.mi { font-size:50px; margin-bottom:14px; }
+.mt { font-size:18px; font-weight:700; margin-bottom:8px; font-family:'Lora',serif; }
+.md { font-size:13px; color:var(--ink2); margin-bottom:22px; line-height:1.6; }
+.mbtns { display:flex; gap:10px; }
+.mc {
+  flex:1; padding:11px; border:1.5px solid var(--border);
+  border-radius:10px; background:var(--bg2);
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600;
+  cursor:pointer; color:var(--ink2); transition:all .2s;
+}
+.mc:hover { border-color:var(--ink2); }
+.mok {
+  flex:1; padding:11px;
+  background:linear-gradient(135deg,var(--sage),#2d5238);
+  color:white; border:none; border-radius:10px;
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer;
+}
+
+.rev-list::-webkit-scrollbar { width:4px; }
+.rev-list::-webkit-scrollbar-thumb { background:rgba(181,69,27,.3); border-radius:2px; }
+.cv-note { font-size:11px; color:var(--ink3); text-align:center; margin-top:14px; }
+</style>
+</head>
+<body>
+
+<!-- ====== COVER ====== -->
+<div id="cover" class="page active">
+  <div class="cover-wrap">
+    <div class="cv-chip">📘 Simulasi Ujian</div>
+    <h1>Sosiologi<br><em>Kelas X</em></h1>
+    <h2>Nilai Sosial · Norma Sosial · Lembaga Sosial<br>Penyimpangan · Pengendalian · Keteraturan Sosial</h2>
+
+    <div class="topic-pills">
+      <span class="pill pill-1">Nilai Sosial</span>
+      <span class="pill pill-2">Norma Sosial</span>
+      <span class="pill pill-3">Lembaga Sosial</span>
+      <span class="pill pill-4">Penyimpangan &amp; Pengendalian</span>
+    </div>
+
+    <div class="stats-row">
+      <div class="sc"><div class="v">30</div><div class="l">PG</div></div>
+      <div class="sc"><div class="v">10</div><div class="l">Essay</div></div>
+      <div class="sc"><div class="v">90</div><div class="l">Menit</div></div>
+      <div class="sc"><div class="v">100</div><div class="l">Nilai</div></div>
+    </div>
+
+    <div class="fg">
+      <label>Nama Lengkap</label>
+      <input type="text" id="inp-nama" placeholder="Ketik nama lengkap kamu...">
+    </div>
+    <div class="fg">
+      <label>Kelas</label>
+      <select id="inp-kelas">
+        <option value="">— Pilih Kelas —</option>
+        <option>X-1</option><option>X-2</option><option>X-3</option><option>X-4</option>
+        <option>X-IPS 1</option><option>X-IPS 2</option><option>X-IPS 3</option>
+      </select>
+    </div>
+    <button class="btn-start" onclick="mulai()">Buka Buku · Mulai Ujian →</button>
+    <div class="cv-note">30 Pilihan Ganda (poin 3/soal = 60) · 10 Essay (poin variatif = 40)</div>
+  </div>
+</div>
+
+<!-- ====== UJIAN ====== -->
+<div id="ujian" class="page">
+  <div class="top-bar">
+    <div class="tb-info">
+      <h3 id="t-nama">—</h3>
+      <p id="t-kelas">Sosiologi · Kelas X</p>
+    </div>
+    <div class="timer-wrap">
+      <span class="tl">⏱ Waktu</span>
+      <div class="tv" id="timer">90:00</div>
+    </div>
+  </div>
+
+  <div class="ujian-grid">
+    <!-- SOAL -->
+    <div class="qcard">
+      <div class="qprog"><div class="qprog-bar" id="qpb"></div></div>
+      <div class="qhead">
+        <div class="qbadge" id="qnum">No. 1</div>
+        <div class="qtopic" id="qtopic">Nilai Sosial</div>
+      </div>
+      <div class="qtxt" id="qtxt"></div>
+      <div id="qbody"></div>
+      <div class="qnav">
+        <button class="nav-b nav-prev" onclick="nav(-1)">← Sebelumnya</button>
+        <button class="nav-b nav-next" id="nav-next" onclick="handleNext()">Selanjutnya →</button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="side">
+      <div class="side-card">
+        <div class="side-title">Navigasi Soal</div>
+        <p style="font-size:10px;color:var(--ink3);margin-bottom:7px;font-weight:700;letter-spacing:.5px;text-transform:uppercase">Pilihan Ganda</p>
+        <div class="num-grid" id="gpg"></div>
+        <p style="font-size:10px;color:var(--ink3);margin:10px 0 7px;font-weight:700;letter-spacing:.5px;text-transform:uppercase">Essay</p>
+        <div class="num-grid" id="ge"></div>
+      </div>
+
+      <div class="side-card">
+        <div class="side-title">Keterangan</div>
+        <div class="leg">
+          <div class="leg-i"><div class="ld ld-e"></div> Belum dijawab</div>
+          <div class="leg-i"><div class="ld ld-d"></div> Sudah dijawab</div>
+          <div class="leg-i"><div class="ld ld-c"></div> Soal aktif</div>
+        </div>
+      </div>
+
+      <div class="side-card" style="background:#fdf8f0;border-color:#e8d5b0">
+        <div class="side-title" style="color:var(--amber)">Topik Soal PG</div>
+        <div class="topic-legend">
+          <div class="tleg-item"><div class="tleg-dot" style="background:#b5451b"></div> No. 1–8 · Nilai Sosial</div>
+          <div class="tleg-item"><div class="tleg-dot" style="background:#3d6b4f"></div> No. 9–16 · Norma Sosial</div>
+          <div class="tleg-item"><div class="tleg-dot" style="background:#c27d20"></div> No. 17–24 · Lembaga Sosial</div>
+          <div class="tleg-item"><div class="tleg-dot" style="background:#8c2020"></div> No. 25–30 · Penyimpangan &amp; Pengendalian</div>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="konfirmasi()">✓ Kumpulkan Jawaban</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== HASIL ====== -->
+<div id="hasil" class="page">
+  <div class="hasil-card">
+    <div class="hasil-hero">
+      <div class="score-ring">
+        <div class="sn" id="h-nilai">0</div>
+        <div class="sl">Nilai</div>
+      </div>
+      <div class="h-nama" id="h-nama">—</div>
+      <div class="h-kelas" id="h-kelas">—</div>
+      <div class="pred-b" id="h-pred">—</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-b"><div class="sv gr" id="s-benar">0</div><div class="slb">✅ Benar</div></div>
+      <div class="stat-b"><div class="sv rd" id="s-salah">0</div><div class="slb">❌ Salah</div></div>
+      <div class="stat-b"><div class="sv am" id="s-kosong">0</div><div class="slb">— Kosong</div></div>
+    </div>
+    <div class="rev-sec">
+      <div class="rev-title">📖 Review Jawaban Pilihan Ganda</div>
+      <div class="rev-list" id="rev-list"></div>
+    </div>
+    <div class="hasil-acts">
+      <button class="btn-ulang" onclick="ulang()">↺ Ulangi Ujian</button>
+      <button class="btn-essay-r" onclick="lihatEssay()">📝 Review Essay & Kunci</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== ESSAY REVIEW ====== -->
+<div id="erPage" class="page">
+  <div class="er-card">
+    <div class="er-head">
+      <h2>📝 Review Jawaban Essay</h2>
+      <p>Sosiologi Kelas X · Bandingkan jawabanmu dengan kunci di bawah</p>
+    </div>
+    <div id="er-content"></div>
+    <button class="back-btn" onclick="showPage('hasil')">← Kembali ke Hasil</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="mi">📚</div>
+    <div class="mt">Kumpulkan Jawaban?</div>
+    <div class="md" id="m-desc"></div>
+    <div class="mbtns">
+      <button class="mc" onclick="closeModal()">Cek Lagi</button>
+      <button class="mok" onclick="submit()">Kumpulkan</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOPICS = ['Nilai Sosial','Nilai Sosial','Nilai Sosial','Nilai Sosial','Nilai Sosial','Nilai Sosial','Nilai Sosial','Nilai Sosial','Norma Sosial','Norma Sosial','Norma Sosial','Norma Sosial','Norma Sosial','Norma Sosial','Norma Sosial','Norma Sosial','Lembaga Sosial','Lembaga Sosial','Lembaga Sosial','Lembaga Sosial','Lembaga Sosial','Lembaga Sosial','Lembaga Sosial','Lembaga Sosial','Penyimpangan','Penyimpangan','Pengendalian Sosial','Pengendalian Sosial','Keteraturan Sosial','Keteraturan Sosial'];
+
+const PG = [
+  /* 1 */ {q:'Nilai sosial terbentuk melalui proses...',o:['Pewarisan genetik dari orang tua kepada anak','Interaksi sosial antarindividu dalam masyarakat','Penetapan sepihak oleh pemimpin adat','Paksaan pemerintah melalui peraturan tertulis','Proses belajar di sekolah formal saja'],j:1},
+  /* 2 */ {q:'Prof. Dr. Notonagoro membagi nilai sosial menjadi tiga jenis. Nilai yang berkaitan dengan kegunaan untuk melakukan aktivitas sehari-hari disebut nilai...',o:['Material','Vital','Rohani','Moral','Religius'],j:1},
+  /* 3 */ {q:'Perhatikan contoh berikut: "Seorang pelajar tidak berani menyontek meskipun tidak ada guru yang mengawasi." Hal ini menunjukkan...',o:['Nilai dominan yang dipaksakan','Nilai material yang melekat','Nilai yang telah mendarah daging (internalized)','Nilai vital yang bersifat sementara','Nilai rohani yang bersifat relatif'],j:2},
+  /* 4 */ {q:'Salah satu fungsi nilai sosial adalah sebagai "penentu harga sosial". Maksudnya adalah...',o:['Menentukan harga barang di pasar berdasarkan moral','Menetapkan status atau derajat seseorang dalam kelompok masyarakat','Menghitung nilai ekonomi seseorang berdasarkan kekayaan','Menentukan upah yang layak bagi pekerja','Mengukur tingkat religiusitas individu di masyarakat'],j:1},
+  /* 5 */ {q:'Nilai sosial yang dianggap lebih penting dari nilai lainnya dan memiliki pengaruh besar terhadap kehidupan masyarakat disebut...',o:['Nilai mendarah daging','Nilai dominan','Nilai vital','Nilai rohani','Nilai material'],j:1},
+  /* 6 */ {q:'Nilai keindahan termasuk ke dalam sub-nilai rohani karena bersumber dari...',o:['Akal dan rasio manusia','Wahyu Tuhan Yang Maha Esa','Unsur rasa/estetika manusia','Kehendak dan kemauan manusia','Pengalaman empiris yang dapat diuji'],j:2},
+  /* 7 */ {q:'Nilai sosial bersifat relatif, artinya...',o:['Nilai tidak pernah berubah sepanjang masa','Setiap kelompok/daerah dapat memiliki nilai yang berbeda-beda','Nilai hanya berlaku bagi kalangan tertentu saja','Nilai ditentukan secara mutlak oleh negara','Nilai berlaku sama di seluruh penjuru dunia'],j:1},
+  /* 8 */ {q:'Kejujuran, tolong-menolong, dan tidak menyakiti orang lain merupakan contoh dari nilai...',o:['Nilai kebenaran/empiris','Nilai keindahan','Nilai moral/kebaikan','Nilai religius','Nilai material'],j:2},
+  /* 9 */ {q:'Hubungan yang tepat antara nilai sosial dan norma sosial adalah...',o:['Nilai sosial merupakan pelaksana dari norma sosial','Norma sosial merupakan penjabaran/pelaksana dari nilai sosial','Keduanya berdiri sendiri tanpa keterkaitan','Nilai sosial lebih rendah tingkatannya dari norma sosial','Norma sosial hanya berlaku di lembaga formal'],j:1},
+  /* 10 */ {q:'Urutan tingkatan norma sosial dari yang paling rendah hingga tertinggi daya ikatnya adalah...',o:['Folkways – Usage – Mores – Customs – Law','Usage – Folkways – Mores – Customs – Law','Mores – Folkways – Usage – Customs – Law','Law – Customs – Mores – Folkways – Usage','Usage – Mores – Folkways – Customs – Law'],j:1},
+  /* 11 */ {q:'Seseorang yang melanggar tata kelakuan (mores) akan mendapatkan sanksi berupa...',o:['Teguran ringan dari teman sebaya','Hukuman penjara dari pengadilan','Dikucilkan atau diusir dari masyarakat','Denda berupa uang yang ditetapkan pemerintah','Hanya dianggap aneh oleh masyarakat'],j:2},
+  /* 12 */ {q:'Norma yang bersumber dari hati nurani manusia dan membedakan baik-buruk secara moral adalah norma...',o:['Agama','Kesopanan','Kesusilaan','Hukum','Kebiasaan'],j:2},
+  /* 13 */ {q:'Memberi salam saat bertemu, mengetuk pintu sebelum masuk, dan berpakaian sopan merupakan contoh norma...',o:['Agama','Kesusilaan','Kebiasaan','Kesopanan','Hukum'],j:3},
+  /* 14 */ {q:'Norma hukum berbeda dari norma sosial lainnya karena...',o:['Hanya berlaku bagi kalangan pejabat','Bersifat tertulis, disahkan lembaga negara, dan berlaku bagi seluruh warga negara','Sanksinya ringan dan tidak mengikat','Tidak memiliki hubungan dengan nilai sosial','Hanya berlaku di lingkungan masyarakat adat'],j:1},
+  /* 15 */ {q:'Salah satu ciri norma sosial adalah "umumnya tidak tertulis". Hal ini berarti norma...',o:['Tidak perlu ditaati oleh masyarakat','Tidak memiliki sanksi bagi pelanggarnya','Hanya diingat, diserap, dan diterapkan dalam interaksi sosial','Bersifat sementara dan mudah berubah setiap hari','Hanya berlaku bagi kelompok kecil masyarakat'],j:2},
+  /* 16 */ {q:'Norma yang tumbuh dari kebiasaan yang dilakukan berulang-ulang secara turun-temurun adalah norma...',o:['Agama','Hukum','Kesopanan','Kesusilaan','Kebiasaan'],j:4},
+  /* 17 */ {q:'Lembaga sosial yang tumbuh secara tidak sengaja dari kebiasaan masyarakat (bukan dirancang) disebut...',o:['Enacted Institution','Operative Institution','Crescive Institution','Basic Institution','Regulative Institution'],j:2},
+  /* 18 */ {q:'Berikut yang BUKAN merupakan ciri-ciri lembaga sosial adalah...',o:['Memiliki simbol/lambang tertentu','Memiliki tata tertib dan tradisi','Terbentuk secara spontan dalam waktu singkat','Memiliki usia yang relatif lama','Memiliki tujuan yang jelas'],j:2},
+  /* 19 */ {q:'Lembaga pendidikan memiliki fungsi "transmisi budaya". Fungsi ini berarti...',o:['Mengirimkan budaya Indonesia ke luar negeri','Mewariskan nilai dan pengetahuan dari generasi ke generasi','Menghapus budaya lama dan menggantinya dengan budaya baru','Menyaring budaya asing yang masuk ke Indonesia','Menerjemahkan budaya lokal ke dalam bahasa nasional'],j:1},
+  /* 20 */ {q:'Kepolisian, kejaksaan, dan pengadilan termasuk jenis lembaga...',o:['Basic Institution','Subsidiary Institution','Operative Institution','Regulative Institution','Enacted Institution'],j:3},
+  /* 21 */ {q:'Fungsi lembaga keluarga yang berkaitan dengan penanaman nilai dan norma kepada anak-anak disebut fungsi...',o:['Reproduksi','Afeksi','Sosialisasi','Proteksi','Ekonomi'],j:2},
+  /* 22 */ {q:'Timbangan sebagai simbol keadilan merupakan lambang dari lembaga...',o:['Lembaga Agama','Lembaga Pendidikan','Lembaga Hukum','Lembaga Ekonomi','Lembaga Politik'],j:2},
+  /* 23 */ {q:'Lembaga ekonomi berfungsi mengatur distribusi dan pertukaran barang/jasa. Hal ini bertujuan untuk...',o:['Menguasai seluruh pasar oleh pemerintah','Memastikan distribusi barang/jasa berlangsung secara adil dan merata','Membatasi masyarakat dalam melakukan kegiatan ekonomi','Memonopoli harga oleh perusahaan tertentu','Menghilangkan perbedaan kelas sosial dalam masyarakat'],j:1},
+  /* 24 */ {q:'Lembaga yang dianggap kurang penting untuk kelangsungan masyarakat disebut...',o:['Basic Institution','Subsidiary Institution','Regulative Institution','Crescive Institution','Enacted Institution'],j:1},
+  /* 25 */ {q:'Perilaku menyimpang yang sudah menjadi kebiasaan, tidak dapat ditoleransi masyarakat, dan mendapat sanksi disebut...',o:['Penyimpangan Primer','Penyimpangan Sekunder','Penyimpangan Individual','Penyimpangan Kolektif','Penyimpangan Positif'],j:1},
+  /* 26 */ {q:'Menurut Edwin Sutherland, seseorang menjadi pelaku penyimpangan karena...',o:['Ketidaksesuaian antara tujuan dan cara yang tersedia','Pemberian label "menyimpang" oleh masyarakat','Belajar berperilaku menyimpang dari pergaulan dengan orang yang menyimpang','Gangguan kepribadian yang bersifat bawaan lahir','Tekanan ekonomi dan kemiskinan yang akut'],j:2},
+  /* 27 */ {q:'Pengendalian sosial yang dilakukan SEBELUM terjadinya penyimpangan disebut...',o:['Represif','Koersif','Preventif','Kuratif','Persuasif'],j:2},
+  /* 28 */ {q:'Gosip, cemooh, dan pengucilan sosial termasuk jenis pengendalian sosial...',o:['Formal–Preventif','Formal–Represif','Informal–Koersif','Informal–Persuasif','Informal tanpa mekanisme baku'],j:4},
+  /* 29 */ {q:'Tahap keteraturan sosial di mana individu secara konsisten melaksanakan hak dan kewajiban sesuai norma sehingga berlangsung tetap dan berkelanjutan disebut...',o:['Tertib Sosial','Order','Keajekan','Pola','Konformitas'],j:2},
+  /* 30 */ {q:'Tahap keteraturan sosial tertinggi yang menjadi model/acuan bagi seluruh masyarakat dalam berinteraksi disebut...',o:['Tertib Sosial','Order','Keajekan','Pola','Keteraturan'],j:3},
+];
+
+const ES = [
+  {
+    q:'Jelaskan pengertian nilai sosial menurut pemahaman sosiologi, dan sebutkan serta jelaskan minimal 4 ciri-ciri nilai sosial beserta masing-masing contohnya! (Skor: 15)',
+    k:`<b>Pengertian Nilai Sosial:</b>
+Nilai sosial adalah ukuran, patokan, anggapan, atau keyakinan yang dianut oleh masyarakat untuk menentukan apa yang dianggap baik, buruk, benar, salah, indah, atau tidak indah dalam kehidupan bersama.
+
+<b>Minimal 4 Ciri-Ciri Nilai Sosial:</b>
+
+<em>1. Merupakan hasil interaksi sosial</em>
+Nilai tidak datang dengan sendirinya, melainkan terbentuk melalui pergaulan antar manusia.
+Contoh: Nilai gotong royong terbentuk dari kebiasaan bekerja bersama dalam masyarakat desa.
+
+<em>2. Bersifat relatif</em>
+Nilai berbeda antara satu masyarakat dengan masyarakat lain.
+Contoh: Di sebagian budaya, makan menggunakan tangan dianggap sopan; di budaya lain, justru dianggap tidak sopan.
+
+<em>3. Dapat diwariskan/disosialisasikan</em>
+Nilai diturunkan dari generasi ke generasi melalui proses sosialisasi.
+Contoh: Nilai menghormati orang tua diajarkan sejak kecil di dalam keluarga.
+
+<em>4. Mempengaruhi perkembangan diri seseorang</em>
+Nilai menjadi pedoman dalam berpikir, bersikap, dan bertindak.
+Contoh: Seseorang yang menganut nilai kejujuran akan menolak korupsi meski ada kesempatan.
+
+<em>5. Mengandung emosi dan keyakinan</em>
+Orang akan merasa marah/sedih jika nilai yang dianutnya dilanggar.
+Contoh: Seseorang akan merasa marah melihat orang lain berlaku tidak jujur.`
+  },
+  {
+    q:'Bedakan antara nilai dominan dan nilai mendarah daging (internalized value)! Berikan masing-masing 2 contoh konkret dalam kehidupan sehari-hari! (Skor: 10)',
+    k:`<b>Nilai Dominan:</b>
+Nilai yang dianggap lebih penting/lebih tinggi kedudukannya dibandingkan nilai-nilai lainnya dalam suatu masyarakat. Nilai ini dipandang sebagai prioritas utama dan sangat mempengaruhi perilaku mayoritas anggota masyarakat.
+
+Contoh:
+<em>1.</em> Di masyarakat Indonesia, nilai gotong royong dianggap lebih penting daripada nilai individualisme — tampak dalam budaya kerja bakti dan ronda malam.
+<em>2.</em> Nilai religiositas sangat dominan dalam masyarakat pesantren — terlihat dari seluruh aktivitas yang diorientasikan pada ibadah.
+
+<b>Nilai Mendarah Daging (Internalized):</b>
+Nilai yang telah menyatu dan menjadi bagian dari kepribadian seseorang sehingga dilaksanakan secara otomatis tanpa perlu perintah atau pengawasan dari luar.
+
+Contoh:
+<em>1.</em> Seorang pelajar tidak berani menyontek meski tidak ada guru yang mengawasi, karena nilai kejujuran sudah tertanam dalam dirinya.
+<em>2.</em> Seseorang selalu memberi salam saat memasuki rumah, bahkan saat sendirian, karena sudah menjadi kebiasaan yang mengakar.`
+  },
+  {
+    q:'Jelaskan 5 tingkatan norma sosial berdasarkan daya ikatnya, mulai dari yang terendah hingga tertinggi! Sertakan contoh pelanggaran dan sanksinya untuk masing-masing tingkatan! (Skor: 15)',
+    k:`<em>1. Usage (Cara)</em> — Daya ikat paling rendah
+Norma yang mengatur cara seseorang bertindak dalam interaksi dengan orang lain.
+Pelanggaran: Makan dengan suara keras (berdecap).
+Sanksi: Teguran ringan atau dirasakan tidak sopan oleh sekitar.
+
+<em>2. Folkways (Kebiasaan)</em>
+Perbuatan yang dilakukan berulang-ulang dalam bentuk yang sama.
+Pelanggaran: Tidak mengucapkan "terima kasih" setelah dibantu.
+Sanksi: Dianggap tidak sopan, dicibir oleh masyarakat.
+
+<em>3. Mores (Tata Kelakuan)</em>
+Norma yang mencerminkan sifat-sifat hidup dari kelompok masyarakat yang dilaksanakan sebagai alat pengawas.
+Pelanggaran: Berzina atau berselingkuh.
+Sanksi: Dikucilkan atau diusir dari lingkungan masyarakat.
+
+<em>4. Customs (Adat Istiadat)</em>
+Tata kelakuan yang kekal dan terintegrasi kuat dengan pola-pola perilaku masyarakat.
+Pelanggaran: Menikah dengan orang yang dilarang adat (misal semarga dalam budaya Batak).
+Sanksi: Sanksi adat yang berat, pengucilan, bahkan pengusiran dari kampung halaman.
+
+<em>5. Law (Hukum)</em> — Daya ikat tertinggi
+Norma yang disahkan oleh lembaga resmi negara dan bersifat memaksa dengan sanksi yang tegas.
+Pelanggaran: Mencuri, korupsi, pembunuhan.
+Sanksi: Hukuman pidana — penjara, denda resmi, bahkan hukuman mati.`
+  },
+  {
+    q:'Sebutkan dan jelaskan 5 jenis norma sosial berdasarkan sumbernya! Berikan 2 contoh untuk masing-masing jenis norma tersebut! (Skor: 15)',
+    k:`<em>1. Norma Agama</em>
+Berasal dari ajaran Tuhan/wahyu yang diturunkan melalui kitab suci dan nabi.
+Contoh: (1) Kewajiban shalat lima waktu bagi Muslim. (2) Larangan membunuh dalam semua agama.
+
+<em>2. Norma Kesusilaan</em>
+Berasal dari hati nurani manusia; membedakan perbuatan baik dan buruk secara moral.
+Contoh: (1) Tidak berbohong kepada orang lain. (2) Tidak mengkhianati kepercayaan yang diberikan.
+
+<em>3. Norma Kesopanan</em>
+Berasal dari tata cara pergaulan masyarakat yang disepakati bersama.
+Contoh: (1) Memberi salam saat bertemu orang yang lebih tua. (2) Mengetuk pintu sebelum masuk ruangan orang lain.
+
+<em>4. Norma Kebiasaan (Adat)</em>
+Berasal dari kebiasaan yang dilakukan berulang-ulang dan dianggap sebagai kewajiban sosial.
+Contoh: (1) Membawa oleh-oleh saat pulang dari perjalanan jauh. (2) Selamatan/kenduri saat memiliki hajatan.
+
+<em>5. Norma Hukum</em>
+Berasal dari lembaga resmi negara, bersifat tertulis dan memaksa.
+Contoh: (1) Wajib memiliki SIM saat mengemudikan kendaraan. (2) Larangan korupsi berdasarkan UU Tipikor.`
+  },
+  {
+    q:'Apa yang dimaksud dengan lembaga sosial? Sebutkan dan jelaskan minimal 5 ciri-ciri lembaga sosial yang membedakannya dari kelompok sosial biasa! (Skor: 15)',
+    k:`<b>Pengertian Lembaga Sosial:</b>
+Lembaga sosial adalah sistem norma-norma, nilai, dan prosedur yang terorganisir dan relatif permanen, yang terbentuk untuk memenuhi kebutuhan dasar masyarakat secara berkesinambungan.
+
+<b>5 Ciri-Ciri Lembaga Sosial:</b>
+
+<em>1. Memiliki simbol/lambang</em>
+Setiap lembaga memiliki simbol khas yang merepresentasikan tujuan dan fungsinya.
+Contoh: Timbangan = Lembaga Hukum; Toga = Lembaga Pendidikan.
+
+<em>2. Memiliki tata tertib dan tradisi</em>
+Lembaga memiliki aturan dan kebiasaan yang harus dipatuhi anggotanya, baik tertulis maupun tidak tertulis.
+
+<em>3. Memiliki usia yang relatif lama</em>
+Berbeda dengan kelompok sosial biasa, lembaga bertahan dalam waktu yang panjang melampaui satu generasi.
+
+<em>4. Memiliki tujuan yang jelas</em>
+Lembaga dibentuk untuk memenuhi kebutuhan tertentu dalam masyarakat secara terarah dan sistematis.
+
+<em>5. Memiliki alat perlengkapan (equipment)</em>
+Lembaga memiliki perangkat fisik maupun non-fisik untuk menjalankan fungsinya.
+Contoh: Sekolah memiliki gedung, kurikulum, buku teks, dan seragam.`
+  },
+  {
+    q:'Pilih salah satu dari lembaga sosial berikut: lembaga keluarga, lembaga pendidikan, atau lembaga hukum. Jelaskan secara lengkap pengertian dan minimal 4 fungsi lembaga yang kamu pilih! (Skor: 15)',
+    k:`<b>Contoh jawaban: LEMBAGA KELUARGA</b>
+
+<b>Pengertian:</b>
+Lembaga keluarga adalah unit sosial terkecil dalam masyarakat yang terbentuk berdasarkan ikatan perkawinan dan/atau hubungan darah, yang memiliki fungsi vital bagi kelangsungan hidup individu dan masyarakat.
+
+<b>Fungsi-Fungsi Lembaga Keluarga:</b>
+
+<em>1. Fungsi Reproduksi</em>
+Keluarga adalah tempat yang sah untuk melahirkan keturunan dan meneruskan kehidupan manusia secara teratur dan berkesinambungan.
+
+<em>2. Fungsi Sosialisasi</em>
+Keluarga adalah agen sosialisasi pertama dan utama di mana nilai, norma, dan budaya ditanamkan kepada anak sejak dini.
+
+<em>3. Fungsi Afeksi (Kasih Sayang)</em>
+Keluarga memberikan rasa cinta, kehangatan, dan dukungan emosional yang diperlukan untuk perkembangan psikologis anggotanya.
+
+<em>4. Fungsi Proteksi (Perlindungan)</em>
+Keluarga melindungi anggotanya dari ancaman fisik, psikologis, maupun sosial.
+
+<em>5. Fungsi Ekonomi</em>
+Keluarga berfungsi sebagai unit ekonomi dasar — mencari nafkah, mengelola keuangan, dan memenuhi kebutuhan hidup sehari-hari.`
+  },
+  {
+    q:'Jelaskan pengertian penyimpangan sosial dan uraikan perbedaan antara penyimpangan primer dan penyimpangan sekunder! Berikan contoh kasus untuk masing-masing! (Skor: 10)',
+    k:`<b>Pengertian Penyimpangan Sosial:</b>
+Penyimpangan sosial adalah segala bentuk perilaku yang tidak sesuai atau melanggar nilai dan norma yang berlaku dalam suatu masyarakat.
+
+<b>Penyimpangan Primer vs Sekunder:</b>
+
+<em>Penyimpangan Primer:</em>
+Penyimpangan yang bersifat sementara, tidak berulang secara konsisten, masih bisa ditoleransi masyarakat, dan pelakunya masih memiliki identitas sebagai orang "normal".
+Contoh: Seorang siswa terlambat satu kali karena kendaraannya mogok. Masyarakat masih memaklumi dan tidak menganggapnya sebagai orang yang bermasalah.
+
+<em>Penyimpangan Sekunder:</em>
+Penyimpangan yang dilakukan secara berulang-ulang, sudah menjadi kebiasaan, tidak dapat ditoleransi lagi oleh masyarakat, dan pelakunya sudah mendapat label/cap "penyimpang" dari masyarakat.
+Contoh: Seseorang yang terus-menerus mencuri hingga menjadi kebiasaan, dikenal sebagai "pencuri" oleh lingkungannya, dan mendapat sanksi hukum.`
+  },
+  {
+    q:'Sebutkan dan jelaskan 3 teori penyimpangan sosial yang kamu ketahui! Siapa tokoh pencetusnya, dan bagaimana penjelasannya? (Skor: 15)',
+    k:`<em>1. Teori Asosiasi Diferensial — Edwin Sutherland</em>
+Seseorang menjadi pelaku penyimpangan karena ia belajar perilaku menyimpang dari orang-orang di sekitarnya, terutama dalam kelompok pergaulan yang intim. Jika seseorang lebih banyak bergaul dengan orang-orang yang menyimpang, ia akan cenderung meniru perilaku tersebut.
+Contoh: Remaja yang berteman dengan geng yang sering mabuk-mabukan lama-kelamaan ikut mabuk.
+
+<em>2. Teori Strain/Anomie — Robert K. Merton</em>
+Penyimpangan terjadi karena adanya ketidaksesuaian (ketegangan/strain) antara tujuan yang diinginkan masyarakat dengan cara/sarana yang tersedia untuk mencapainya. Orang yang tidak memiliki akses ke cara yang sah akan mencari cara lain (menyimpang) untuk mencapai tujuan.
+Contoh: Orang miskin yang ingin kaya tetapi tidak punya modal akhirnya memilih mencuri.
+
+<em>3. Teori Labeling — Edwin Lemert / Howard Becker</em>
+Penyimpangan bukan hanya soal tindakan itu sendiri, melainkan soal label/cap "menyimpang" yang diberikan masyarakat. Sekali seseorang dilabeli "penjahat" atau "penyimpang", ia cenderung internalisasi label tersebut dan terus berperilaku menyimpang (penyimpangan sekunder).
+Contoh: Mantan narapidana yang terus dicurigai dan ditolak masyarakat akhirnya kembali ke dunia kriminal karena tidak ada pilihan lain.`
+  },
+  {
+    q:'Jelaskan perbedaan antara pengendalian sosial preventif dan represif, serta pengendalian formal dan informal! Berikan contoh nyata untuk masing-masing! (Skor: 15)',
+    k:`<b>A. Berdasarkan Waktu Pelaksanaan:</b>
+
+<em>Pengendalian Preventif:</em>
+Dilakukan SEBELUM terjadinya penyimpangan, bertujuan mencegah agar penyimpangan tidak terjadi.
+Contoh: Guru mengadakan penyuluhan tentang bahaya narkoba sebelum ada kasus penyalahgunaan narkoba di sekolah. Keluarga menanamkan nilai moral sejak anak masih kecil.
+
+<em>Pengendalian Represif:</em>
+Dilakukan SESUDAH terjadinya penyimpangan, bertujuan memulihkan keadaan agar kembali normal.
+Contoh: Polisi menangkap pelaku kejahatan dan membawanya ke pengadilan. Sekolah mengeluarkan siswa yang terbukti mengonsumsi narkoba.
+
+<b>B. Berdasarkan Pelaksana/Sifatnya:</b>
+
+<em>Pengendalian Formal:</em>
+Dilakukan oleh lembaga/institusi resmi yang memiliki kewenangan terstruktur dan sanksi yang jelas.
+Contoh: Polisi menilang pengendara yang melanggar lampu merah. Pengadilan menjatuhkan hukuman kepada terdakwa.
+
+<em>Pengendalian Informal:</em>
+Dilakukan oleh kelompok masyarakat (keluarga, teman, tetangga) tanpa mekanisme baku dan resmi.
+Contoh: Teman menegur seseorang yang berperilaku kasar. Ibu menasihati anaknya yang sering pulang malam. Gosip dan cemooh dari tetangga kepada pelaku perilaku buruk.`
+  },
+  {
+    q:'Jelaskan 4 tahap keteraturan sosial secara berurutan (tertib sosial → order → keajekan → pola)! Mengapa keteraturan sosial penting bagi kehidupan bermasyarakat? (Skor: 15)',
+    k:`<b>4 Tahap Keteraturan Sosial:</b>
+
+<em>1. Tertib Sosial</em>
+Kondisi di mana anggota masyarakat bertindak sesuai dengan nilai, norma, dan aturan yang berlaku. Ini adalah tahap paling dasar — kehidupan berjalan teratur karena setiap orang tahu dan mau mengikuti aturan.
+Contoh: Pengendara berhenti saat lampu merah; warga antre dengan tertib.
+
+<em>2. Order</em>
+Kondisi di mana terdapat sistem nilai dan norma yang tersusun rapi dan ditaati secara berkelanjutan oleh anggota masyarakat. Pada tahap ini, keteraturan bukan hanya perilaku sesaat, tetapi sudah menjadi sistem yang terpola.
+Contoh: Sistem birokrasi pemerintahan yang berjalan dengan prosedur yang jelas dan ditaati.
+
+<em>3. Keajekan</em>
+Kondisi di mana individu secara konsisten dan berulang-ulang melaksanakan hak dan kewajibannya sesuai norma, sehingga pola tersebut berlangsung tetap dan berkelanjutan dalam jangka panjang.
+Contoh: Warga selalu membayar pajak tepat waktu setiap tahun secara konsisten.
+
+<em>4. Pola</em>
+Tahap keteraturan sosial tertinggi. Pola adalah perilaku yang sudah menjadi model/acuan standar bagi seluruh masyarakat dalam berinteraksi. Pola menjadi "cetak biru" kehidupan sosial yang diikuti turun-temurun.
+Contoh: Tradisi upacara adat pernikahan yang sudah menjadi patokan bagi seluruh masyarakat dalam suatu daerah.
+
+<b>Pentingnya Keteraturan Sosial:</b>
+Keteraturan sosial penting karena: (1) menciptakan rasa aman dan nyaman bagi seluruh anggota masyarakat; (2) memungkinkan kerja sama dan koordinasi sosial yang efektif; (3) menjadi fondasi bagi pembangunan dan kemajuan bangsa; (4) mencegah konflik dan perpecahan; (5) memastikan nilai dan budaya dapat diwariskan secara harmonis kepada generasi berikutnya.`
+  },
+];
+
+// ——— STATE ———
+let cur=0, jaw=new Array(40).fill(null), nama='', kls='', ti=null, wkt=90*60, done=false;
+const H=['A','B','C','D','E'];
+
+function mulai(){
+  nama=document.getElementById('inp-nama').value.trim();
+  kls=document.getElementById('inp-kelas').value;
+  if(!nama){alert('Masukkan nama kamu terlebih dahulu!');return;}
+  if(!kls){alert('Pilih kelas kamu terlebih dahulu!');return;}
+  document.getElementById('t-nama').textContent=nama;
+  document.getElementById('t-kelas').textContent='Kelas '+kls+' · Sosiologi';
+  buatGrid(); tampil(0); startTimer(); showPage('ujian');
+}
+
+function buatGrid(){
+  const gp=document.getElementById('gpg'), ge=document.getElementById('ge');
+  gp.innerHTML=''; ge.innerHTML='';
+  for(let i=0;i<30;i++){
+    const b=document.createElement('button');
+    b.className='nb'; b.id='nb-'+i;
+    b.textContent=i+1;
+    b.onclick=()=>tampil(i);
+    gp.appendChild(b);
+  }
+  for(let i=0;i<10;i++){
+    const b=document.createElement('button');
+    b.className='nb enb'; b.id='nb-'+(i+30);
+    b.textContent='E'+(i+1);
+    b.onclick=()=>tampil(i+30);
+    ge.appendChild(b);
+  }
+}
+
+function tampil(idx){
+  cur=idx;
+  const pg=idx<30, si=pg?idx:idx-30, s=pg?PG[si]:ES[si];
+  document.getElementById('qnum').textContent=pg?'No. '+(idx+1):'Essay '+(si+1);
+  document.getElementById('qtopic').textContent=pg?TOPICS[idx]:'Essay';
+  document.getElementById('qtxt').innerHTML=s.q.replace(/\n/g,'<br>');
+  document.getElementById('qpb').style.width=((idx+1)/40*100)+'%';
+
+  const qb=document.getElementById('qbody');
+  if(pg){
+    let h='<div class="opts">';
+    s.o.forEach((op,i)=>{
+      let c='';
+      if(done){
+        if(i===s.j) c='ok dis';
+        else if(jaw[idx]===i) c='wrong dis';
+        else c='dis';
+      } else if(jaw[idx]===i) c='sel';
+      h+=`<button class="opt ${c}" onclick="pick(${i})">
+        <div class="opt-ltr">${H[i]}</div>
+        <div class="opt-txt">${op}</div>
+      </button>`;
+    });
+    h+='</div>';
+    qb.innerHTML=h;
+  } else {
+    const v=jaw[idx]||'', ro=done?'readonly':'', ks=done?'show':'';
+    qb.innerHTML=`<div class="essay-wrap">
+      <textarea id="eta" placeholder="Tulis jawaban lengkap dan sistematis di sini..." oninput="saveE(this.value)" ${ro}>${v}</textarea>
+      <div class="kunci-box ${ks}">
+        <div class="kunci-lbl">✅ Kunci / Panduan Jawaban</div>
+        <div class="kunci-txt">${s.k}</div>
+      </div>
+    </div>`;
+  }
+
+  const nn=document.getElementById('nav-next');
+  nn.textContent=idx===39?(done?'Lihat Hasil ✓':'Kumpulkan ✓'):'Selanjutnya →';
+  updGrid();
+}
+
+function pick(i){ if(done)return; jaw[cur]=i; tampil(cur); }
+function saveE(v){ jaw[cur]=v; updGrid(); }
+function nav(d){ const n=cur+d; if(n>=0&&n<=39)tampil(n); }
+function handleNext(){ if(cur===39){if(done)showPage('hasil');else konfirmasi();}else nav(1); }
+
+function updGrid(){
+  for(let i=0;i<40;i++){
+    const b=document.getElementById('nb-'+i); if(!b)continue;
+    b.className='nb'+(i>=30?' enb':'');
+    if(i===cur) b.classList.add('cur');
+    else if(jaw[i]!==null&&jaw[i]!=='') b.classList.add('done');
+  }
+}
+
+function startTimer(){
+  ti=setInterval(()=>{
+    wkt--;
+    const m=String(Math.floor(wkt/60)).padStart(2,'0'), s=String(wkt%60).padStart(2,'0');
+    const el=document.getElementById('timer');
+    el.textContent=m+':'+s; el.className='tv';
+    if(wkt<=300) el.classList.add('warn');
+    if(wkt<=60) el.classList.add('danger');
+    if(wkt<=0){ clearInterval(ti); submit(); }
+  },1000);
+}
+
+function konfirmasi(){
+  const dp=jaw.slice(0,30).filter(j=>j!==null).length;
+  const de=jaw.slice(30).filter(j=>j!==null&&j!=='').length;
+  document.getElementById('m-desc').innerHTML=
+    `Kamu sudah menjawab <strong>${dp}/30</strong> PG dan <strong>${de}/10</strong> essay.<br><br>`+
+    (dp+de<40?'⚠️ Masih ada soal yang belum dijawab.':'✅ Semua soal sudah dijawab!');
+  document.getElementById('modal').classList.add('show');
+}
+function closeModal(){ document.getElementById('modal').classList.remove('show'); }
+
+function submit(){
+  closeModal(); clearInterval(ti); done=true;
+  let benar=0; PG.forEach((s,i)=>{ if(jaw[i]===s.j) benar++; });
+  const salah=jaw.slice(0,30).filter(j=>j!==null).length-benar;
+  const kosong=jaw.slice(0,30).filter(j=>j===null).length;
+  const nilaiPG=Math.round((benar/30)*60);
+  const nilai=nilaiPG+40;
+  const pred=nilai>=90?'🏆 Sangat Baik':nilai>=80?'⭐ Baik':nilai>=70?'✅ Cukup':'📖 Perlu Belajar Lagi';
+
+  document.getElementById('h-nilai').textContent=nilai;
+  document.getElementById('h-nama').textContent=nama;
+  document.getElementById('h-kelas').textContent='Kelas '+kls+' · Sosiologi';
+  document.getElementById('h-pred').textContent=pred;
+  document.getElementById('s-benar').textContent=benar;
+  document.getElementById('s-salah').textContent=salah;
+  document.getElementById('s-kosong').textContent=kosong;
+
+  let html='';
+  PG.forEach((s,i)=>{
+    const ok=jaw[i]===s.j;
+    html+=`<div class="ri ${ok?'ok':'wrong'}">
+      <div class="rn">${i+1}</div>
+      <div class="rb">
+        <div class="rq">${s.q.length>72?s.q.slice(0,72)+'...':s.q}</div>
+        <div class="ru">Jawabanmu: <span>${jaw[i]!==null?H[jaw[i]]+'. '+s.o[jaw[i]]:'— tidak dijawab'}</span></div>
+        ${!ok?`<div class="rk">✓ ${H[s.j]}. ${s.o[s.j]}</div>`:''}
+      </div>
+    </div>`;
+  });
+  document.getElementById('rev-list').innerHTML=html;
+  showPage('hasil');
+}
+
+function lihatEssay(){
+  let html='';
+  ES.forEach((s,i)=>{
+    const jw=jaw[i+30]||'';
+    html+=`<div class="er-item">
+      <div class="er-num">Essay ${i+1}</div>
+      <div class="er-q">${s.q.replace(/\n/g,'<br>')}</div>
+      <div class="er-albl">✏️ Jawabanmu</div>
+      <div class="er-abox">${jw||'<em style="color:var(--ink3)">Tidak dijawab</em>'}</div>
+      <div class="er-klbl">✅ Kunci / Panduan Jawaban</div>
+      <div class="er-kbox">${s.k}</div>
+    </div>`;
+  });
+  document.getElementById('er-content').innerHTML=html;
+  showPage('erPage');
+}
+
+function ulang(){
+  jaw=new Array(40).fill(null); cur=0; wkt=90*60; done=false;
+  clearInterval(ti); showPage('cover');
+}
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
